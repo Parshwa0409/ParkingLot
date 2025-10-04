@@ -1,0 +1,17 @@
+package strategy.costCalculation;
+
+import abstracts.CostCalculation;
+import model.Ticket;
+
+public class OverOneDayCalculation implements CostCalculation {
+    private final Ticket ticket;
+
+    public OverOneDayCalculation(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    @Override
+    public double parkingCost() {
+        return this.ticket.spotAssigned.getSpotType().getParkingCost() * 0.8333 * ticket.getHoursParked();
+    }
+}
