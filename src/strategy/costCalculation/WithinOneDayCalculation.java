@@ -12,6 +12,6 @@ public class WithinOneDayCalculation implements CostCalculation {
 
     @Override
     public double parkingCost() {
-        return this.ticket.spotAssigned.getSpotType().getParkingCost() * ticket.getHoursParked();
+        return this.ticket.getSpotAssigned().getSpotType().getParkingCost() * ticket.getHoursParked();
     }
 }

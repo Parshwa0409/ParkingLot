@@ -6,7 +6,7 @@ public enum VehicleType {
     FourWheeler(3,"FourWheeler"),
     DefaultVehicleType(4,"DefaultVehicleType");
 
-    private int code;
+    private final int code;
     private final String vehicleType;
 
     VehicleType(int code, String vehicleType) {

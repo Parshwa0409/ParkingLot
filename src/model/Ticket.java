@@ -4,19 +4,20 @@ import abstracts.IParkingSpot;
 import abstracts.IVehicle;
 
 public class Ticket {
-    public IVehicle vehicle;
-    public IParkingSpot spotAssigned;
-    long entryTime = 0;
-    long exitTime = 0;
-    double hoursParked = 0;
-    double cost = 0.0;
+    private final IVehicle vehicle;
+    private final IParkingSpot spotAssigned;
+    private final long entryTime;
+    private long exitTime;
+    private double hoursParked;
+    private double cost;
 
     public Ticket(IVehicle vehicle, IParkingSpot spotAssigned) {
         this.vehicle = vehicle;
         this.spotAssigned = spotAssigned;
+        this.entryTime = System.currentTimeMillis();
     }
 
-    public void calculateHoursParked() {
+    void calculateHoursParked() {
         this.hoursParked = Math.ceil((double) (this.exitTime - this.entryTime) / (1000 * 60 * 60));
     }
 
@@ -28,11 +29,7 @@ public class Ticket {
         return spotAssigned;
     }
 
-    public void setVehicle(IVehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public double getHoursParked(){
+    public double getHoursParked() {
         return this.hoursParked;
     }
 
@@ -40,19 +37,17 @@ public class Ticket {
         return this.cost;
     }
 
-    public void setCost(double cost){
+    void setCost(double cost) {
         this.cost = cost;
     }
 
-    public void setEntryTime(){
-        this.entryTime = System.currentTimeMillis();
-    }
-
-    public void setExitTime(){
+    void setExitTime() {
         this.exitTime = System.currentTimeMillis();
     }
 
-    public void setExitTime(long exitTime){
-        this.exitTime = exitTime;
+    @Override
+    public String toString() {
+        return String.format("Ticket{vehicle=%s, spot=%s, entryTime=%d, cost=%.2f}",
+            vehicle.getLicensePlate(), spotAssigned.getSpotType(), entryTime, cost);
     }
 }

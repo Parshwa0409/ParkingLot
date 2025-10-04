@@ -1,27 +1,25 @@
+import ENUMS.ParkingSpotType;
 import ENUMS.VehicleType;
 import abstracts.IParkingSpot;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
-        // Create parking lot
-        ParkingLot parkingLot = new ParkingLot();
+        // Create parking lot with initial spots
         List<IParkingSpot> parkingSpots = new ArrayList<>(
                 List.of(
-                        new ParkingSpot(ENUMS.ParkingSpotType.FourWheelerSpot),
-                        new ParkingSpot(ENUMS.ParkingSpotType.FourWheelerSpot),
-                        new ParkingSpot(ENUMS.ParkingSpotType.TwoWheelerSpot),
-                        new ParkingSpot(ENUMS.ParkingSpotType.ThreeWheelerSpot),
-                        new ParkingSpot(ENUMS.ParkingSpotType.TwoWheelerSpot),
-                        new ParkingSpot(ENUMS.ParkingSpotType.FourWheelerSpot)
+                        new ParkingSpot(ParkingSpotType.FourWheelerSpot),
+                        new ParkingSpot(ParkingSpotType.FourWheelerSpot),
+                        new ParkingSpot(ParkingSpotType.TwoWheelerSpot),
+                        new ParkingSpot(ParkingSpotType.ThreeWheelerSpot),
+                        new ParkingSpot(ParkingSpotType.TwoWheelerSpot),
+                        new ParkingSpot(ParkingSpotType.FourWheelerSpot)
                 )
         );
-        parkingLot.setParkingSpots(parkingSpots);
-
+        ParkingLot parkingLot = new ParkingLot(parkingSpots);
         ParkingLotManager manager = new ParkingLotManager(parkingLot);
 
         try {
@@ -33,21 +31,17 @@ public class Main {
             // Park vehicles
             System.out.println("\nParking vehicles...");
             Ticket carTicket1 = manager.parkVehicle(car1);
-            System.out.println("Car1 parked in spot: " + carTicket1.spotAssigned.getSpotType());
-            System.out.println("Tickets for parked vehicle:" + carTicket1);
+            System.out.println("Car1 parked in spot: " + carTicket1.getSpotAssigned().getSpotType());
 
             Ticket bikeTicket = manager.parkVehicle(bike1);
-            System.out.println("Bike parked in spot: " + bikeTicket.spotAssigned.getSpotType());
-            System.out.println("Tickets for parked vehicle:" + bikeTicket);
+            System.out.println("Bike parked in spot: " + bikeTicket.getSpotAssigned().getSpotType());
 
             Ticket carTicket2 = manager.parkVehicle(car2);
-            System.out.println("Car2 parked in spot: " + carTicket2.spotAssigned.getSpotType());
-            System.out.println("Tickets for parked vehicle:" + carTicket2);
+            System.out.println("Car2 parked in spot: " + carTicket2.getSpotAssigned().getSpotType());
 
             // Show current status
             System.out.println("\nCurrent parking lot status:");
-            ParkingLotStatus status = manager.getReport();
-            System.out.println(status.getFormattedReport());
+            System.out.println(manager.getReport().getFormattedReport());
 
             // Test different parking durations
             System.out.println("\nTesting different parking durations...");
@@ -63,8 +57,7 @@ public class Main {
 
             // Final status
             System.out.println("\nFinal parking lot status:");
-            status = manager.getReport();
-            System.out.println(status.getFormattedReport());
+            System.out.println(manager.getReport().getFormattedReport());
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

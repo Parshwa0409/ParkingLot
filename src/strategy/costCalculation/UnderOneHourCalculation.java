@@ -12,6 +12,6 @@ public class UnderOneHourCalculation implements CostCalculation {
 
     @Override
     public double parkingCost(){
-        return ticket.spotAssigned.getSpotType().getParkingCost() * 1.5;
+        return ticket.getSpotAssigned().getSpotType().getParkingCost() * 1.5;
     }
 }

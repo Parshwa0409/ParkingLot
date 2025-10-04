@@ -14,72 +14,90 @@ public class ParkingLotManager {
     private final ParkingLot parkingLot;
 
     public ParkingLotManager(ParkingLot parkingLot) {
+        if (parkingLot == null) {
+            throw new IllegalArgumentException("ParkingLot cannot be null");
+        }
         this.parkingLot = parkingLot;
     }
 
-    public boolean parkingSlotsAvailable(VehicleType vehicleType){
+    public boolean parkingSlotsAvailable(VehicleType vehicleType) {
+        if (vehicleType == null) {
+            return false;
+        }
         return parkingLot.getParkingSpots()
                 .stream()
-                .anyMatch(
-                        spot -> (
-                                spot.isAvailable() && spot.getSpotType()==ParkingSpotTypeFactory.getSpotType(vehicleType)
-                        )
+                .anyMatch(spot ->
+                    spot.isAvailable() &&
+                    spot.getSpotType() == ParkingSpotTypeFactory.getSpotType(vehicleType)
                 );
     }
 
-    public Ticket parkVehicle(IVehicle vehicle){
+    public Ticket parkVehicle(IVehicle vehicle) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle cannot be null");
+        }
+
+        if (!parkingSlotsAvailable(vehicle.getVehicleType())) {
+            throw new RuntimeException("No parking spots available for vehicle type: " + vehicle.getVehicleType());
+        }
+
         IParkingSpot spot = findAvailableSpot(
                 ParkingSpotTypeFactory.getSpotType(vehicle.getVehicleType())
         );
 
         Ticket ticket = TicketFactory.issueTicket(vehicle, spot);
-        parkingLot.useSpot(ticket);
+        parkingLot.useSpot(spot, vehicle, ticket);
         return ticket;
     }
 
-    public double unparkVehicle(String licensePlate){
-        Ticket issuedTicket = parkingLot.getIssuedTickets()
-                .stream()
-                .filter(t -> Objects.equals(t.vehicle.getLicensePlate(), licensePlate))
-                .findFirst()
-                .orElseThrow(
-                        () -> new RuntimeException("No ticket found for vehicle with license plate: " + licensePlate)
-                );
+    public double unparkVehicle(String licensePlate) {
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate cannot be null or empty");
+        }
 
-        IParkingSpot spot = issuedTicket.spotAssigned;
+        Ticket issuedTicket = findTicketByLicensePlate(licensePlate);
+        IParkingSpot spot = issuedTicket.getSpotAssigned();
+        IVehicle vehicle = issuedTicket.getVehicle();
 
         issuedTicket.setExitTime();
         issuedTicket.calculateHoursParked();
 
-        double cost = calculateCost(spot, issuedTicket);
+        double cost = CostCalculationFactory.getCostCalculation(issuedTicket).parkingCost();
         issuedTicket.setCost(cost);
 
-        parkingLot.unUseSpot(issuedTicket);
-
-        return issuedTicket.cost;
+        parkingLot.unUseSpot(spot, vehicle);
+        return cost;
     }
 
-    public ParkingLotStatus getReport() {
-        return new ParkingLotStatus(
-                parkingLot.getParkedVehicles().size(),
-                parkingLot.getIssuedTickets().size(),
-                parkingLot.getIssuedTickets().stream().mapToDouble(Ticket::getCost).sum(),
-                parkingLot.getParkingSpots().stream().filter(IParkingSpot::isAvailable).count(),
-                parkingLot.getParkingSpots().stream().filter(spot -> !spot.isAvailable()).count()
-        );
+    private Ticket findTicketByLicensePlate(String licensePlate) {
+        return parkingLot.getIssuedTickets()
+                .stream()
+                .filter(t -> Objects.equals(t.getVehicle().getLicensePlate(), licensePlate))
+                .findFirst()
+                .orElseThrow(() ->
+                    new RuntimeException("No ticket found for vehicle with license plate: " + licensePlate)
+                );
     }
 
     private IParkingSpot findAvailableSpot(ParkingSpotType spotType) {
         return parkingLot.getParkingSpots()
                 .stream()
-                .filter(spot -> (spot.isAvailable() && spot.getSpotType()==spotType))
+                .filter(spot ->
+                    spot.isAvailable() && spot.getSpotType() == spotType
+                )
                 .findFirst()
-                .orElseThrow(
-                        () -> new RuntimeException("No available parking spots")
+                .orElseThrow(() ->
+                    new RuntimeException("No available parking spots for type: " + spotType)
                 );
     }
 
-    private double calculateCost(IParkingSpot spot, Ticket ticket){
-        return CostCalculationFactory.getCostCalculation(ticket).parkingCost();
+    public ParkingLotStatus getReport() {
+        return new ParkingLotStatus(
+            parkingLot.getParkedVehicles().size(),
+            parkingLot.getIssuedTickets().size(),
+            parkingLot.getIssuedTickets().stream().mapToDouble(Ticket::getCost).sum(),
+            parkingLot.getParkingSpots().stream().filter(IParkingSpot::isAvailable).count(),
+            parkingLot.getParkingSpots().stream().filter(spot -> !spot.isAvailable()).count()
+        );
     }
 }

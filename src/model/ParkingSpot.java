@@ -7,16 +7,15 @@ import abstracts.IVehicle;
 public class ParkingSpot implements IParkingSpot {
     private boolean available;
     private IVehicle parkedVehicle;
-    private ParkingSpotType spotType = ParkingSpotType.DefaultSpot;
+    private final ParkingSpotType spotType;
 
     public ParkingSpot(ParkingSpotType spotType) {
+        if (spotType == null) {
+            spotType = ParkingSpotType.DefaultSpot;
+        }
+        this.spotType = spotType;
         this.available = true;
         this.parkedVehicle = null;
-        this.spotType = spotType;
-    }
-
-    public IVehicle getParkedVehicle() {
-        return parkedVehicle;
     }
 
     @Override
@@ -39,10 +38,5 @@ public class ParkingSpot implements IParkingSpot {
     public void removeVehicle() {
         this.parkedVehicle = null;
         this.available = true;
-    }
-
-    @Override
-    public double cost() {
-        return spotType.getParkingCost();
     }
 }
