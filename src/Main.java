@@ -1,4 +1,3 @@
-import ENUMS.ParkingSpotType;
 import ENUMS.VehicleType;
 import abstracts.IParkingSpot;
 import model.*;
@@ -11,12 +10,12 @@ public class Main {
         // Create parking lot with initial spots
         List<IParkingSpot> parkingSpots = new ArrayList<>(
                 List.of(
-                        new ParkingSpot(ParkingSpotType.FourWheelerSpot),
-                        new ParkingSpot(ParkingSpotType.FourWheelerSpot),
-                        new ParkingSpot(ParkingSpotType.TwoWheelerSpot),
-                        new ParkingSpot(ParkingSpotType.ThreeWheelerSpot),
-                        new ParkingSpot(ParkingSpotType.TwoWheelerSpot),
-                        new ParkingSpot(ParkingSpotType.FourWheelerSpot)
+                        new ParkingSpot(VehicleType.FourWheeler),
+                        new ParkingSpot(VehicleType.FourWheeler),
+                        new ParkingSpot(VehicleType.TwoWheeler),
+                        new ParkingSpot(VehicleType.TwoWheeler),
+                        new ParkingSpot(VehicleType.ThreeWheeler),
+                        new ParkingSpot(VehicleType.ThreeWheeler)
                 )
         );
         ParkingLot parkingLot = new ParkingLot(parkingSpots);

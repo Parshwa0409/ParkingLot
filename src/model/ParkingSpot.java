@@ -1,25 +1,22 @@
 package model;
 
-import ENUMS.ParkingSpotType;
+import ENUMS.VehicleType;
 import abstracts.IParkingSpot;
 import abstracts.IVehicle;
 
 public class ParkingSpot implements IParkingSpot {
     private boolean available;
     private IVehicle parkedVehicle;
-    private final ParkingSpotType spotType;
+    private final VehicleType spotType;
 
-    public ParkingSpot(ParkingSpotType spotType) {
-        if (spotType == null) {
-            spotType = ParkingSpotType.DefaultSpot;
-        }
+    public ParkingSpot(VehicleType spotType) {
         this.spotType = spotType;
         this.available = true;
         this.parkedVehicle = null;
     }
 
     @Override
-    public ParkingSpotType getSpotType() {
+    public VehicleType getSpotType() {
         return spotType;
     }
 

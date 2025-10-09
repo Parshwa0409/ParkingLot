@@ -1,10 +1,10 @@
 package abstracts;
 
-import ENUMS.ParkingSpotType;
+import ENUMS.VehicleType;
 
 public interface IParkingSpot {
     boolean isAvailable();
     void parkVehicle(IVehicle vehicle);
     void removeVehicle();
-    ParkingSpotType getSpotType();
+    VehicleType getSpotType();
 }
