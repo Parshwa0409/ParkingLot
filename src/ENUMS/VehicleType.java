@@ -1,17 +1,19 @@
 package ENUMS;
 
 public enum VehicleType {
-    TwoWheeler(1,"TwoWheeler"),
-    ThreeWheeler(2, "ThreeWheeler"),
-    FourWheeler(3,"FourWheeler"),
-    DefaultVehicleType(4,"DefaultVehicleType");
+    TwoWheeler(1,"TwoWheeler", 20),
+    ThreeWheeler(2, "ThreeWheeler", 30),
+    FourWheeler(3,"FourWheeler", 40),
+    DefaultVehicleType(4,"DefaultVehicleType", 10);
 
     private final int code;
     private final String vehicleType;
+    private final int parkingCost;
 
-    VehicleType(int code, String vehicleType) {
+    VehicleType(int code, String vehicleType, int cost) {
         this.code = code;
         this.vehicleType = vehicleType;
+        this.parkingCost = cost;
     }
 
     public String getVehicleType(int code) {
@@ -20,8 +22,10 @@ public enum VehicleType {
                 return type.vehicleType;
             }
         }
-
         throw new RuntimeException("Invalid Vehicle Type Code");
     }
 
+    public int getParkingCost() {
+        return parkingCost;
+    }
 }
