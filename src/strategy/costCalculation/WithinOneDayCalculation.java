@@ -1,6 +1,7 @@
 package strategy.costCalculation;
 
 import abstracts.CostCalculation;
+import config.ParkingCostConfig;
 import model.Ticket;
 
 public class WithinOneDayCalculation implements CostCalculation {
@@ -12,6 +13,8 @@ public class WithinOneDayCalculation implements CostCalculation {
 
     @Override
     public double parkingCost() {
-        return this.ticket.getSpotAssigned().getSpotType().getParkingCost() * ticket.getHoursParked();
+        double baseRate = ticket.getSpotAssigned().getSpotType().getParkingCost();
+        double timeMultiplier = ParkingCostConfig.getHourlyRate("WITHIN_DAY");
+        return baseRate * timeMultiplier;
     }
 }
