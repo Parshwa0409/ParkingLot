@@ -1,4 +1,4 @@
-package ENUMS;
+package enums;
 
 public enum VehicleType {
     TwoWheeler(1,"TwoWheeler", 20),

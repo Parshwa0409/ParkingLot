@@ -1,6 +1,6 @@
 package model;
 
-import ENUMS.VehicleType;
+import enums.VehicleType;
 import abstracts.IVehicle;
 
 public class ParkingSpot {

@@ -1,6 +1,6 @@
 package model;
 
-import ENUMS.VehicleType;
+import enums.VehicleType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package abstracts;
 
-import ENUMS.VehicleType;
+import enums.VehicleType;
 
 public interface IVehicle {
     String getLicensePlate();
