@@ -1,11 +1,12 @@
 package factories;
 
-import abstracts.IParkingSpot;
 import abstracts.IVehicle;
+import model.ParkingSpot;
 import model.Ticket;
 
+
 public class TicketFactory {
-    public static Ticket issueTicket(IVehicle vehicle, IParkingSpot spotAssigned){
+    public static Ticket issueTicket(IVehicle vehicle, ParkingSpot spotAssigned){
         return new Ticket(vehicle, spotAssigned);
     }
 }

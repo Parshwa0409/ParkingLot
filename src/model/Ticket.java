@@ -1,17 +1,16 @@
 package model;
 
-import abstracts.IParkingSpot;
 import abstracts.IVehicle;
 
 public class Ticket {
     private final IVehicle vehicle;
-    private final IParkingSpot spotAssigned;
+    private final ParkingSpot spotAssigned;
     private final long entryTime;
     private long exitTime;
     private double hoursParked;
     private double cost;
 
-    public Ticket(IVehicle vehicle, IParkingSpot spotAssigned) {
+    public Ticket(IVehicle vehicle, ParkingSpot spotAssigned) {
         this.vehicle = vehicle;
         this.spotAssigned = spotAssigned;
         this.entryTime = System.currentTimeMillis();
@@ -25,7 +24,7 @@ public class Ticket {
         return vehicle;
     }
 
-    public IParkingSpot getSpotAssigned() {
+    public ParkingSpot getSpotAssigned() {
         return spotAssigned;
     }
 

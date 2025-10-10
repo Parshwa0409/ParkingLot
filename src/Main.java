@@ -1,24 +1,39 @@
 import ENUMS.VehicleType;
-import abstracts.IParkingSpot;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        // Create parking lot with initial spots
-        List<IParkingSpot> parkingSpots = new ArrayList<>(
+    private static List<ParkingSpot> parkingSpots(int floorNumber) {
+        return new ArrayList<>(
                 List.of(
-                        new ParkingSpot(VehicleType.FourWheeler),
-                        new ParkingSpot(VehicleType.FourWheeler),
-                        new ParkingSpot(VehicleType.TwoWheeler),
-                        new ParkingSpot(VehicleType.TwoWheeler),
-                        new ParkingSpot(VehicleType.ThreeWheeler),
-                        new ParkingSpot(VehicleType.ThreeWheeler)
+                        new model.ParkingSpot(VehicleType.FourWheeler, floorNumber),
+                        new model.ParkingSpot(VehicleType.FourWheeler, floorNumber),
+                        new model.ParkingSpot(VehicleType.TwoWheeler, floorNumber),
+                        new model.ParkingSpot(VehicleType.TwoWheeler, floorNumber),
+                        new model.ParkingSpot(VehicleType.ThreeWheeler, floorNumber),
+                        new model.ParkingSpot(VehicleType.ThreeWheeler, floorNumber)
                 )
         );
-        ParkingLot parkingLot = new ParkingLot(parkingSpots);
+    }
+
+    public static void main(String[] args) {
+        // Create parking lot with initial spots
+        List<ParkingSpot> parkingSpotsFloor1 = parkingSpots(1);
+        List<ParkingSpot> parkingSpotsFloor2 = parkingSpots(2);
+        
+        ParkingFloor floor1 = new ParkingFloor(1);
+        floor1.setParkingSpots(parkingSpotsFloor1);
+
+        ParkingFloor floor2 = new ParkingFloor(2);
+        floor2.setParkingSpots(parkingSpotsFloor2);
+
+        List<ParkingFloor> floors = new ArrayList<>();
+        floors.add(floor1);
+        floors.add(floor2);
+
+        ParkingLot parkingLot = new ParkingLot(floors);
         ParkingLotManager manager = new ParkingLotManager(parkingLot);
 
         try {
@@ -26,21 +41,22 @@ public class Main {
             Vehicle car1 = new Vehicle("KA-37 EP-6452", VehicleType.FourWheeler);
             Vehicle bike1 = new Vehicle("KA-37 EP-6453", VehicleType.TwoWheeler);
             Vehicle car2 = new Vehicle("KA-37 EP-6454", VehicleType.FourWheeler);
+            Vehicle car3 = new Vehicle("KA-37 EP-6454", VehicleType.FourWheeler);
 
             // Park vehicles
             System.out.println("\nParking vehicles...");
-            Ticket carTicket1 = manager.parkVehicle(car1);
-            System.out.println("Car1 parked in spot: " + carTicket1.getSpotAssigned().getSpotType());
 
             Ticket bikeTicket = manager.parkVehicle(bike1);
-            System.out.println("Bike parked in spot: " + bikeTicket.getSpotAssigned().getSpotType());
+            System.out.println("Bike parked in spot: " + bikeTicket.getSpotAssigned() + "on floor: " + bikeTicket.getSpotAssigned().getFloorNumber());
+
+            Ticket carTicket1 = manager.parkVehicle(car1);
+            System.out.println("Car1 parked in spot: " + carTicket1.getSpotAssigned() + "on floor: " + carTicket1.getSpotAssigned().getFloorNumber());
 
             Ticket carTicket2 = manager.parkVehicle(car2);
-            System.out.println("Car2 parked in spot: " + carTicket2.getSpotAssigned().getSpotType());
+            System.out.println("Car2 parked in spot: " + carTicket2.getSpotAssigned() + "on floor: " + carTicket2.getSpotAssigned().getFloorNumber());
 
-            // Show current status
-            System.out.println("\nCurrent parking lot status:");
-            System.out.println(manager.getReport().getFormattedReport());
+            Ticket carTicket3 = manager.parkVehicle(car3);
+            System.out.println("Car3 parked in spot: " + carTicket3.getSpotAssigned() + "on floor: " + carTicket3.getSpotAssigned().getFloorNumber());
 
             // Test different parking durations
             System.out.println("\nTesting different parking durations...");
@@ -53,10 +69,6 @@ public class Main {
 
             double cost3 = manager.unparkVehicle(car2.getLicensePlate());
             System.out.println("Car2 cost: $" + cost3);
-
-            // Final status
-            System.out.println("\nFinal parking lot status:");
-            System.out.println(manager.getReport().getFormattedReport());
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

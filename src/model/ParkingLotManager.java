@@ -1,7 +1,6 @@
 package model;
 
 import ENUMS.VehicleType;
-import abstracts.IParkingSpot;
 import abstracts.IVehicle;
 import factories.CostCalculationFactory;
 import factories.TicketFactory;
@@ -27,7 +26,7 @@ public class ParkingLotManager {
             throw new RuntimeException("No parking spots available for vehicle type: " + vehicle.getVehicleType());
         }
 
-        IParkingSpot spot = findAvailableSpot(vehicle.getVehicleType());
+        ParkingSpot spot = findAvailableSpot(vehicle.getVehicleType());
 
         Ticket ticket = TicketFactory.issueTicket(vehicle, spot);
         parkingLot.useSpot(spot, vehicle, ticket);
@@ -40,7 +39,7 @@ public class ParkingLotManager {
         }
 
         Ticket issuedTicket = findTicketByLicensePlate(licensePlate);
-        IParkingSpot spot = issuedTicket.getSpotAssigned();
+        ParkingSpot spot = issuedTicket.getSpotAssigned();
         IVehicle vehicle = issuedTicket.getVehicle();
 
         issuedTicket.setExitTime();
@@ -64,35 +63,21 @@ public class ParkingLotManager {
     }
 
     private boolean parkingSlotsAvailable(VehicleType vehicleType) {
-        if (vehicleType == null) {
+        if (vehicleType == null)
             return false;
-        }
-        return parkingLot.getParkingSpots()
+
+        return parkingLot.getParkingFloors()
                 .stream()
-                .anyMatch(spot ->
-                        spot.isAvailable() && spot.getSpotType() == vehicleType
-                );
+                .anyMatch(f -> f.hasAvailableSpot(vehicleType));
     }
 
-    private IParkingSpot findAvailableSpot(VehicleType vehicleType) {
-        return parkingLot.getParkingSpots()
+    private ParkingSpot findAvailableSpot(VehicleType vehicleType) {
+        ParkingFloor firstAvailableFloor = parkingLot.getParkingFloors()
                 .stream()
-                .filter(spot ->
-                    spot.isAvailable() && spot.getSpotType() == vehicleType
-                )
+                .filter(f -> f.hasAvailableSpot(vehicleType))
                 .findFirst()
-                .orElseThrow(() ->
-                    new RuntimeException("No available parking spots for type: " + vehicleType)
-                );
-    }
+                .orElseThrow(() -> new RuntimeException("No available floors with spots for type: " + vehicleType));
 
-    public ParkingLotReport getReport() {
-        return new ParkingLotReport(
-            parkingLot.getParkedVehicles().size(),
-            parkingLot.getIssuedTickets().size(),
-            parkingLot.getIssuedTickets().stream().mapToDouble(Ticket::getCost).sum(),
-            parkingLot.getParkingSpots().stream().filter(IParkingSpot::isAvailable).count(),
-            parkingLot.getParkingSpots().stream().filter(spot -> !spot.isAvailable()).count()
-        );
+        return firstAvailableFloor.getAvailableSpot(vehicleType);
     }
 }
