@@ -1,4 +1,4 @@
-import ENUMS.VehicleType;
+import enums.VehicleType;
 import model.*;
 
 import java.util.ArrayList;
