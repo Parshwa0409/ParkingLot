@@ -1,23 +1,26 @@
 package model;
 
 import abstracts.IVehicle;
+import abstracts.ParkingSpotAllotmentStrategy;
 import factories.CostCalculationFactory;
 import factories.TicketFactory;
 
 public class ParkingLotManager {
     private final ParkingLot parkingLot;
-    private final SpotAssignmentStrategy spotStrategy;
+    private ParkingSpotAllotmentStrategy spotStrategy;
 
     public ParkingLotManager(ParkingLot parkingLot) {
         this.parkingLot = parkingLot;
-        this.spotStrategy = new SpotAssignmentStrategy(parkingLot);
+    }
+
+    public void setSpotStrategy(ParkingSpotAllotmentStrategy spotStrategy) {
+        this.spotStrategy = spotStrategy;
     }
 
     public Ticket parkVehicle(IVehicle vehicle) {
         if (!spotStrategy.isSpotAvailable(vehicle.getVehicleType())) {
             throw new RuntimeException("No parking spots available for vehicle type: " + vehicle.getVehicleType());
         }
-
         ParkingSpot spot = spotStrategy.findSpot(vehicle.getVehicleType());
         Ticket ticket = TicketFactory.issueTicket(vehicle, spot);
         parkingLot.useSpot(spot, vehicle, ticket);

@@ -1,4 +1,6 @@
+import abstracts.ParkingSpotAllotmentStrategy;
 import enums.VehicleType;
+import factories.ParkingAllotmentFactory;
 import model.*;
 
 import java.util.ArrayList;
@@ -19,22 +21,29 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        java.util.Scanner sc = new java.util.Scanner(System.in);
         // Create parking lot with initial spots
         List<ParkingSpot> parkingSpotsFloor1 = parkingSpots(1);
         List<ParkingSpot> parkingSpotsFloor2 = parkingSpots(2);
-        
+        List<ParkingSpot> parkingSpotsFloor3 = parkingSpots(2);
+
         ParkingFloor floor1 = new ParkingFloor(1);
         floor1.setParkingSpots(parkingSpotsFloor1);
 
         ParkingFloor floor2 = new ParkingFloor(2);
         floor2.setParkingSpots(parkingSpotsFloor2);
 
+        ParkingFloor floor3 = new ParkingFloor(3);
+        floor3.setParkingSpots(parkingSpotsFloor3);
+
         List<ParkingFloor> floors = new ArrayList<>();
         floors.add(floor1);
         floors.add(floor2);
+        floors.add(floor3);
 
         ParkingLot parkingLot = new ParkingLot(floors);
         ParkingLotManager manager = new ParkingLotManager(parkingLot);
+        int parkingStrategy;
 
         try {
             // Create vehicles of different types
@@ -46,15 +55,27 @@ public class Main {
             // Park vehicles
             System.out.println("\nParking vehicles...");
 
+            System.out.print("\nPlease choose what strategy to use for parking:\n1. Nearest First\n2. Random\nEnter your choice: ");
+            parkingStrategy = sc.nextInt();
+            manager.setSpotStrategy(ParkingAllotmentFactory.getParkingAllotmentStrategy(parkingStrategy, parkingLot));
             Ticket bikeTicket = manager.parkVehicle(bike1);
             System.out.println("Bike parked in spot: " + bikeTicket.getSpotAssigned() + "on floor: " + bikeTicket.getSpotAssigned().getFloorNumber());
 
+            System.out.print("\nPlease choose what strategy to use for parking:\n1. Nearest First\n2. Random\nEnter your choice: ");
+            parkingStrategy = sc.nextInt();
+            manager.setSpotStrategy(ParkingAllotmentFactory.getParkingAllotmentStrategy(parkingStrategy, parkingLot));
             Ticket carTicket1 = manager.parkVehicle(car1);
             System.out.println("Car1 parked in spot: " + carTicket1.getSpotAssigned() + "on floor: " + carTicket1.getSpotAssigned().getFloorNumber());
 
+            System.out.print("\nPlease choose what strategy to use for parking:\n1. Nearest First\n2. Random\nEnter your choice: ");
+            parkingStrategy = sc.nextInt();
+            manager.setSpotStrategy(ParkingAllotmentFactory.getParkingAllotmentStrategy(parkingStrategy, parkingLot));
             Ticket carTicket2 = manager.parkVehicle(car2);
             System.out.println("Car2 parked in spot: " + carTicket2.getSpotAssigned() + "on floor: " + carTicket2.getSpotAssigned().getFloorNumber());
 
+            System.out.print("\nPlease choose what strategy to use for parking:\n1. Nearest First\n2. Random\nEnter your choice: ");
+            parkingStrategy = sc.nextInt();
+            manager.setSpotStrategy(ParkingAllotmentFactory.getParkingAllotmentStrategy(parkingStrategy, parkingLot));
             Ticket carTicket3 = manager.parkVehicle(car3);
             System.out.println("Car3 parked in spot: " + carTicket3.getSpotAssigned() + "on floor: " + carTicket3.getSpotAssigned().getFloorNumber());
 
@@ -69,7 +90,6 @@ public class Main {
 
             double cost3 = manager.unparkVehicle(car2.getLicensePlate());
             System.out.println("Car2 cost: $" + cost3);
-
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
